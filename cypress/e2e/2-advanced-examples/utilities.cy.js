@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-
+const {_, $, Blob, minimatch, Promise, Buffer} = Cypress
 context('Utilities', () => {
   beforeEach(() => {
     cy.visit('https://example.cypress.io/utilities')
@@ -9,7 +9,7 @@ context('Utilities', () => {
     // https://on.cypress.io/_
     cy.request('https://jsonplaceholder.cypress.io/users')
       .then((response) => {
-        let ids = Cypress._.chain(response.body).map('id').take(3).value()
+        let ids = _.chain(response.body).map('id').take(3).value()
 
         expect(ids).to.deep.eq([1, 2, 3])
       })
@@ -17,7 +17,7 @@ context('Utilities', () => {
 
   it('Cypress.$ - call a jQuery method', () => {
     // https://on.cypress.io/$
-    let $li = Cypress.$('.utility-jquery li:first')
+    let $li = $('.utility-jquery li:first')
 
     cy.wrap($li).should('not.have.class', 'active')
     cy.wrap($li).click()
@@ -29,7 +29,7 @@ context('Utilities', () => {
     cy.get('.utility-blob').then(($div) => {
       // https://github.com/nolanlawson/blob-util#imgSrcToDataURL
       // get the dataUrl string for the javascript-logo
-      return Cypress.Blob.imgSrcToDataURL('https://example.cypress.io/assets/img/javascript-logo.png', undefined, 'anonymous')
+      return Blob.imgSrcToDataURL('https://example.cypress.io/assets/img/javascript-logo.png', undefined, 'anonymous')
       .then((dataUrl) => {
         // create an <img> element and set its src to the dataUrl
         let img = Cypress.$('<img />', { src: dataUrl })
@@ -47,7 +47,7 @@ context('Utilities', () => {
 
   it('Cypress.minimatch - test out glob patterns against strings', () => {
     // https://on.cypress.io/minimatch
-    let matching = Cypress.minimatch('/users/1/comments', '/users/*/comments', {
+    let matching = minimatch('/users/1/comments', '/users/*/comments', {
       matchBase: true,
     })
 
@@ -84,7 +84,7 @@ context('Utilities', () => {
      */
     function waitOneSecond () {
       // return a promise that resolves after 1 second
-      return new Cypress.Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         setTimeout(() => {
           // set waited to true
           waited = true
@@ -104,4 +104,9 @@ context('Utilities', () => {
       })
     })
   })
+  it('Buffer', () => {
+    cy.readFile('./cypress/screenshots/my-image.png', null).then((file) => {
+      expect(Buffer.isBuffer(file)).to.be.true
+    })
+  });
 })
