@@ -21,12 +21,15 @@ context('Traversal', () => {
 
   it('.eq() - get a DOM element at a specific index', () => {
     // https://on.cypress.io/eq
-    cy.get('.traversal-list>li')
-      .eq(1).should('contain', 'siamese')
+    cy.get('.traversal-list>li').as('list')
+      cy.get('@list').eq(1).should('contain', 'siamese')
+      cy.get('@list').eq(2).should('contain','persian')
   })
 
   it('.filter() - get DOM elements that match the selector', () => {
     // https://on.cypress.io/filter
+    cy.get('.traversal-nav>li')
+    .filter('.active')
     cy.get('.traversal-nav>li')
       .filter('.active').should('contain', 'About')
   })
